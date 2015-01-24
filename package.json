@@ -1,7 +1,7 @@
 {
-  "name": "npm-helper",
+  "name": "npm-manifest-helper",
   "version": "1.0.0",
-  "description": "NPM helper programmatic API",
+  "description": "NPM manifest helper programmatic API",
   "main": "index.js",
   "dependencies": {
     "node-helper-shorthand": "^1.0.0",

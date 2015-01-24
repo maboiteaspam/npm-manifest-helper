@@ -8,7 +8,7 @@ var nodeHelper = require('node-helper-shorthand');
 module.exports = function( initialWd ){
 
 
-  var npmHelpers = {
+  var npmHelper = {
 
     /**
      * initial working directory of the spawner
@@ -62,7 +62,7 @@ module.exports = function( initialWd ){
      * @param {Function} callback Callback to run once work is done.
      */
     viewFileSystem: function (path, callback) {
-      var appPath = pathExtra.resolve(npmHelpers.initialWd, path);
+      var appPath = pathExtra.resolve(npmHelper.initialWd, path);
 
       var manifestPath = pathExtra.join(appPath, 'package.json');
       if (fs.existsSync(appPath) && fs.existsSync(manifestPath) ) {
@@ -83,15 +83,15 @@ module.exports = function( initialWd ){
      */
     fetchManifest: function (app, callback) {
 
-      npmHelpers.viewFileSystem(app, function(fsErr, fsManifest){
+      npmHelper.viewFileSystem(app, function(fsErr, fsManifest){
         if (!fsErr) {
           nodeHelper.invoke(callback, fsErr, fsManifest, 'file');
         } else {
-          npmHelpers.viewGitHub(app, function(gitErr, gitManifest){
+          npmHelper.viewGitHub(app, function(gitErr, gitManifest){
             if (!gitErr) {
               nodeHelper.invoke(callback, gitErr, gitManifest, 'url');
             } else {
-              npmHelpers.view(app, function(npmErr, npmManifest){
+              npmHelper.view(app, function(npmErr, npmManifest){
                 if (!npmErr) {
                   npmManifest = npmManifest[Object.keys(npmManifest)[0]];
                   nodeHelper.invoke(callback, npmErr, npmManifest, 'url');
@@ -107,5 +107,5 @@ module.exports = function( initialWd ){
     }
   };
 
-  return npmHelpers;
+  return npmHelper;
 };
