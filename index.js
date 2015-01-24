@@ -78,10 +78,11 @@ module.exports = function( initialWd ){
     /**
      * Fetch a manifest from an url or a path
      *
+     * @param {Object} npmOptions Options to pass to NPM.
      * @param {String} app App or Plugin name to fetch from url or path.
      * @param {Function} callback Termination.
      */
-    fetchManifest: function (app, callback) {
+    fetchManifest: function (npmOptions, app, callback) {
 
       npmHelper.viewFileSystem(app, function(fsErr, fsManifest){
         if (!fsErr) {
@@ -91,7 +92,7 @@ module.exports = function( initialWd ){
             if (!gitErr) {
               nodeHelper.invoke(callback, gitErr, gitManifest, 'url');
             } else {
-              npmHelper.view(app, function(npmErr, npmManifest){
+              npmHelper.view(npmOptions, app, function(npmErr, npmManifest){
                 if (!npmErr) {
                   npmManifest = npmManifest[Object.keys(npmManifest)[0]];
                   nodeHelper.invoke(callback, npmErr, npmManifest, 'url');
