@@ -1,0 +1,18 @@
+{
+  "name": "npm-helper",
+  "version": "1.0.0",
+  "description": "NPM helper programmatic API",
+  "main": "index.js",
+  "dependencies": {
+    "node-helper-shorthand": "^1.0.0",
+    "npm": "^2.3.0",
+    "path-extra": "^0.3.0",
+    "request-json-light": "^0.5.13"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "maboiteaspam",
+  "license": "WTFPL"
+}
