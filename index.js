@@ -36,12 +36,16 @@ module.exports = function( initialWd ){
     /**
      * View package information from github repo.
      *
+     * @param {String} options Options.
      * @param {String} repo Repo to fetch from github.
      * @param {Function} callback Callback to run once work is done.
      */
-    viewGitHub: function (repo, callback) {
+    viewGitHub: function (options, repo, callback) {
+
       var client = request.newClient('https://raw.githubusercontent.com/');
-      var manifestUrl = repo + '/master/package.json';
+
+      var fileName = options.fileName || 'package.json';
+      var manifestUrl = repo + '/master/' + fileName;
 
       client.get(manifestUrl, function (err, res, manifest) {
         if (err) {
@@ -58,13 +62,15 @@ module.exports = function( initialWd ){
     /**
      * View package information from file system.
      *
+     * @param {String} options Options.
      * @param {String} path Path to the module.
      * @param {Function} callback Callback to run once work is done.
      */
-    viewFileSystem: function (path, callback) {
+    viewFileSystem: function (options, path, callback) {
       var appPath = pathExtra.resolve(npmHelper.initialWd, path);
 
-      var manifestPath = pathExtra.join(appPath, 'package.json');
+      var fileName = options.fileName || 'package.json';
+      var manifestPath = pathExtra.join(appPath, fileName);
       if (fs.existsSync(appPath) && fs.existsSync(manifestPath) ) {
         fs.readFile(manifestPath, function (err, manifest) {
           nodeHelper.invoke(callback, err, JSON.parse(manifest));
@@ -78,21 +84,23 @@ module.exports = function( initialWd ){
     /**
      * Fetch a manifest from an url or a path
      *
-     * @param {Object} npmOptions Options to pass to NPM.
+     * @param {Object} options Options passed to NPM.
      * @param {String} app App or Plugin name to fetch from url or path.
      * @param {Function} callback Termination.
      */
-    fetchManifest: function (npmOptions, app, callback) {
+    fetchManifest: function (options, app, callback) {
 
-      npmHelper.viewFileSystem(app, function(fsErr, fsManifest){
+      options.fileName = 'package.json';
+
+      npmHelper.viewFileSystem(options, app, function(fsErr, fsManifest){
         if (!fsErr) {
           nodeHelper.invoke(callback, fsErr, fsManifest, 'file');
         } else {
-          npmHelper.viewGitHub(app, function(gitErr, gitManifest){
+          npmHelper.viewGitHub(options, app, function(gitErr, gitManifest){
             if (!gitErr) {
               nodeHelper.invoke(callback, gitErr, gitManifest, 'url');
             } else {
-              npmHelper.view(npmOptions, app, function(npmErr, npmManifest){
+              npmHelper.view(options, app, function(npmErr, npmManifest){
                 if (!npmErr) {
                   npmManifest = npmManifest[Object.keys(npmManifest)[0]];
                   nodeHelper.invoke(callback, npmErr, npmManifest, 'url');
